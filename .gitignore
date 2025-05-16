@@ -1,0 +1,9 @@
+# Ignore Visual Studio settings
+.vs/
+
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore NuGet packages (if applicable)
+packages/
