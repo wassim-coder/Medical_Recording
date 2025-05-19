@@ -12,8 +12,8 @@ using medical.Data;
 namespace medical.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250502141903_appointmentMigrations")]
-    partial class appointmentMigrations
+    [Migration("20250519095735_InitialCreat")]
+    partial class InitialCreat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,53 @@ namespace medical.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("medical.Models.Analyse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnalyseName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Commentaire")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<decimal>("Cout")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DossierMedicalId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Remboursement")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ResultatAnalyse")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DossierMedicalId");
+
+                    b.ToTable("Analyses");
+                });
 
             modelBuilder.Entity("medical.Models.Appointment", b =>
                 {
@@ -62,6 +109,37 @@ namespace medical.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("medical.Models.DossierMedical", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("DossiersMedical");
                 });
 
             modelBuilder.Entity("medical.Models.User", b =>
@@ -125,6 +203,17 @@ namespace medical.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("medical.Models.Analyse", b =>
+                {
+                    b.HasOne("medical.Models.DossierMedical", "DossierMedical")
+                        .WithMany()
+                        .HasForeignKey("DossierMedicalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DossierMedical");
+                });
+
             modelBuilder.Entity("medical.Models.Appointment", b =>
                 {
                     b.HasOne("medical.Models.User", "Doctor")
@@ -137,6 +226,25 @@ namespace medical.Migrations
                         .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("medical.Models.DossierMedical", b =>
+                {
+                    b.HasOne("medical.Models.User", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("medical.Models.User", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Doctor");
