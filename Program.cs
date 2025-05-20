@@ -22,9 +22,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
 // Configuration de la base de données avec Entity Framework Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add these lines to your service configuration
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Configuration de Swagger pour les tests API
 builder.Services.AddEndpointsApiExplorer();
@@ -61,6 +66,9 @@ builder.Services.AddSwaggerGen(options =>
 
 // Injection des services (incluant IAuthService pour le login)
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 
 // Configuration de l'authentification JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");

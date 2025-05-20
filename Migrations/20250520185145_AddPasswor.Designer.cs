@@ -12,8 +12,8 @@ using medical.Data;
 namespace medical.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250519095735_InitialCreat")]
-    partial class InitialCreat
+    [Migration("20250520185145_AddPasswor")]
+    partial class AddPasswor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,33 @@ namespace medical.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("DossiersMedical");
+                });
+
+            modelBuilder.Entity("medical.Models.PasswordResetToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordResetTokens");
                 });
 
             modelBuilder.Entity("medical.Models.User", b =>

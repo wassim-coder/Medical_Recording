@@ -11,6 +11,7 @@ namespace medical.Data
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<DossierMedical> DossiersMedical { get; set; }
         public DbSet<Analyse> Analyses { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
